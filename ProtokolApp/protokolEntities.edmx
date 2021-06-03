@@ -1,0 +1,538 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="protokolModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="dokument">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_protokola" Type="int" Nullable="false" />
+          <Property Name="TipDokumenta" Type="int" Nullable="false" />
+          <Property Name="Dokument" Type="varbinary(max)" />
+          <Property Name="Filename" Type="nvarchar" MaxLength="255" />
+          <Property Name="Izbrisan" Type="smallint" Nullable="false" />
+          <Property Name="Opis" Type="nvarchar" MaxLength="255" />
+          <Property Name="Racunar" Type="nvarchar" MaxLength="255" />
+          <Property Name="DatumUnosa" Type="datetime" />
+          <Property Name="DatumVrijeme" Type="datetime" />
+        </EntityType>
+        <EntityType Name="instanca">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Naziv" Type="nvarchar" MaxLength="50" />
+          <Property Name="Naziv_forme" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="korisnik">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_sluzbe" Type="int" Nullable="false" />
+          <Property Name="Naziv" Type="nvarchar" MaxLength="50" />
+          <Property Name="canedit" Type="int" />
+          <Property Name="cannew" Type="int" />
+          <Property Name="caninsertfile" Type="int" />
+          <Property Name="canexportexcel" Type="int" />
+        </EntityType>
+        <EntityType Name="korisniksluzbe">
+          <Key>
+            <PropertyRef Name="korisnik_id" />
+            <PropertyRef Name="sluzba_id" />
+          </Key>
+          <Property Name="korisnik_id" Type="int" Nullable="false" />
+          <Property Name="sluzba_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="promjene">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="id_izvorni" Type="int" />
+          <Property Name="tbname" Type="nvarchar" MaxLength="50" />
+          <Property Name="promjena" Type="int" />
+          <Property Name="datum" Type="datetime" />
+          <Property Name="poruka" Type="nvarchar" MaxLength="50" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="protokol">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_sluzbe" Type="int" Nullable="false" />
+          <Property Name="redni_broj" Type="int" />
+          <Property Name="datum" Type="date" />
+          <Property Name="datum_distribucije" Type="date" />
+          <Property Name="predmet" Type="nvarchar" MaxLength="250" />
+          <Property Name="veza" Type="nvarchar" MaxLength="250" />
+          <Property Name="razvod" Type="nvarchar" MaxLength="250" />
+          <Property Name="oznaka_registratora" Type="nvarchar" MaxLength="50" />
+          <Property Name="oznaka_dopisa" Type="nvarchar" MaxLength="50" />
+          <Property Name="dostava_dopisa" Type="nvarchar" MaxLength="50" />
+          <Property Name="napomena" Type="nvarchar" MaxLength="250" />
+          <Property Name="arhiva" Type="nvarchar" MaxLength="50" />
+          <Property Name="izbrisan" Type="int" Nullable="false" />
+          <Property Name="ID_tipa" Type="int" Nullable="false" />
+          <Property Name="Racunar" Type="nvarchar" MaxLength="255" />
+          <Property Name="tipProtokola_SP" Type="nvarchar" MaxLength="255" />
+          <Property Name="brojUlaznogProtokola_SP" Type="nvarchar" MaxLength="255" />
+          <Property Name="datumPrijema_SP" Type="date" />
+          <Property Name="signirano_SP" Type="nvarchar" MaxLength="255" />
+          <Property Name="vrstaDokumenta_sp" Type="nvarchar" MaxLength="255" />
+          <Property Name="sifraDokumenta_SP" Type="nvarchar" MaxLength="255" />
+          <Property Name="nacinPrijema_SP" Type="nvarchar" MaxLength="255" />
+          <Property Name="lokacijaCZK_SP" Type="nvarchar" MaxLength="255" />
+          <Property Name="sifraProstora_SP" Type="nvarchar" MaxLength="255" />
+          <Property Name="nazivKorisnikaUsluge_SP" Type="nvarchar" MaxLength="255" />
+          <Property Name="adresaProstora_SP" Type="nvarchar" MaxLength="255" />
+          <Property Name="rokZaOdgovor_SP" Type="date" />
+          <Property Name="brojRjesenja_SP" Type="nvarchar" MaxLength="255" />
+          <Property Name="vrstaRjesenja_SP" Type="nvarchar" MaxLength="255" />
+          <Property Name="pripremioRjesenje_SP" Type="nvarchar" MaxLength="255" />
+          <Property Name="iznosPoRjesenju_SP" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="brojIzlaznogProtokola_SP" Type="nvarchar" MaxLength="255" />
+          <Property Name="datumOdgovora_SP" Type="date" />
+          <Property Name="statusReklamacije_SP" Type="nvarchar" MaxLength="255" />
+          <Property Name="podbroj_Kabinet" Type="nvarchar" MaxLength="255" />
+          <Property Name="posiljalac_Kabinet" Type="nvarchar" MaxLength="255" />
+          <Property Name="redniBroj_Kabinet" Type="nvarchar" MaxLength="50" />
+          <Property Name="CntDokumenata" Type="int" StoreGeneratedPattern="Computed" />
+          <Property Name="DatumVrijeme" Type="datetime" />
+        </EntityType>
+        <EntityType Name="sluzbe">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Naziv" Type="nvarchar" MaxLength="50" />
+          <Property Name="Naziv_forme" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="tip">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Naziv" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK_dokument_protokol">
+          <End Role="protokol" Type="Self.protokol" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="dokument" Type="Self.dokument" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="protokol">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="dokument">
+              <PropertyRef Name="ID_protokola" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_korisnik">
+          <End Role="korisnik" Type="Self.korisnik" Multiplicity="1" />
+          <End Role="korisniksluzbe" Type="Self.korisniksluzbe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="korisnik">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="korisniksluzbe">
+              <PropertyRef Name="korisnik_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_korisnik_sluzbe">
+          <End Role="sluzbe" Type="Self.sluzbe" Multiplicity="1" />
+          <End Role="korisnik" Type="Self.korisnik" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sluzbe">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="korisnik">
+              <PropertyRef Name="ID_sluzbe" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_protokol_sluzbe">
+          <End Role="sluzbe" Type="Self.sluzbe" Multiplicity="1" />
+          <End Role="protokol" Type="Self.protokol" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sluzbe">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="protokol">
+              <PropertyRef Name="ID_sluzbe" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_protokol_tip">
+          <End Role="tip" Type="Self.tip" Multiplicity="1" />
+          <End Role="protokol" Type="Self.protokol" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tip">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="protokol">
+              <PropertyRef Name="ID_tipa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sluzba">
+          <End Role="sluzbe" Type="Self.sluzbe" Multiplicity="1" />
+          <End Role="korisniksluzbe" Type="Self.korisniksluzbe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sluzbe">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="korisniksluzbe">
+              <PropertyRef Name="sluzba_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="protokolModelStoreContainer">
+          <EntitySet Name="dokument" EntityType="Self.dokument" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="instanca" EntityType="Self.instanca" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="korisnik" EntityType="Self.korisnik" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="korisniksluzbe" EntityType="Self.korisniksluzbe" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="promjene" EntityType="Self.promjene" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="protokol" EntityType="Self.protokol" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sluzbe" EntityType="Self.sluzbe" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tip" EntityType="Self.tip" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_dokument_protokol" Association="Self.FK_dokument_protokol">
+            <End Role="protokol" EntitySet="protokol" />
+            <End Role="dokument" EntitySet="dokument" />
+          </AssociationSet>
+          <AssociationSet Name="FK_korisnik" Association="Self.FK_korisnik">
+            <End Role="korisnik" EntitySet="korisnik" />
+            <End Role="korisniksluzbe" EntitySet="korisniksluzbe" />
+          </AssociationSet>
+          <AssociationSet Name="FK_korisnik_sluzbe" Association="Self.FK_korisnik_sluzbe">
+            <End Role="sluzbe" EntitySet="sluzbe" />
+            <End Role="korisnik" EntitySet="korisnik" />
+          </AssociationSet>
+          <AssociationSet Name="FK_protokol_sluzbe" Association="Self.FK_protokol_sluzbe">
+            <End Role="sluzbe" EntitySet="sluzbe" />
+            <End Role="protokol" EntitySet="protokol" />
+          </AssociationSet>
+          <AssociationSet Name="FK_protokol_tip" Association="Self.FK_protokol_tip">
+            <End Role="tip" EntitySet="tip" />
+            <End Role="protokol" EntitySet="protokol" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sluzba" Association="Self.FK_sluzba">
+            <End Role="sluzbe" EntitySet="sluzbe" />
+            <End Role="korisniksluzbe" EntitySet="korisniksluzbe" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="protokolModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="dokument">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_protokola" Type="Int32" Nullable="false" />
+          <Property Name="TipDokumenta" Type="Int32" Nullable="false" />
+          <Property Name="Dokument" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Filename" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Izbrisan" Type="Int16" Nullable="false" />
+          <Property Name="Opis" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Racunar" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="protokol" Relationship="Self.FK_dokument_protokol" FromRole="dokument" ToRole="protokol" />
+          <Property Name="DatumUnosa" Type="DateTime" Precision="3" />
+          <Property Name="DatumVrijeme" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="korisnik">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_sluzbe" Type="Int32" Nullable="false" />
+          <Property Name="Naziv" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="canedit" Type="Int32" />
+          <Property Name="cannew" Type="Int32" />
+          <Property Name="caninsertfile" Type="Int32" />
+          <NavigationProperty Name="sluzbe1" Relationship="Self.korisniksluzbe" FromRole="korisnik" ToRole="sluzbe" />
+          <Property Name="canexportexcel" Type="Int32" />
+          <NavigationProperty Name="sluzbe" Relationship="protokolModel.FK_korisnik_sluzbe" FromRole="korisnik" ToRole="sluzbe" />
+        </EntityType>
+        <EntityType Name="protokol">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_sluzbe" Type="Int32" Nullable="false" />
+          <Property Name="redni_broj" Type="Int32" />
+          <Property Name="datum" Type="DateTime" Precision="0" />
+          <Property Name="datum_distribucije" Type="DateTime" Precision="0" />
+          <Property Name="predmet" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="veza" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="razvod" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="oznaka_registratora" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="oznaka_dopisa" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="dostava_dopisa" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="napomena" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="arhiva" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="izbrisan" Type="Int32" Nullable="false" />
+          <Property Name="ID_tipa" Type="Int32" Nullable="false" />
+          <Property Name="Racunar" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="dokument" Relationship="Self.FK_dokument_protokol" FromRole="protokol" ToRole="dokument" />
+          <NavigationProperty Name="sluzbe" Relationship="Self.FK_protokol_sluzbe" FromRole="protokol" ToRole="sluzbe" />
+          <NavigationProperty Name="tip" Relationship="Self.FK_protokol_tip" FromRole="protokol" ToRole="tip" />
+          <Property Name="CntDokumenata" Type="Int32" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="DatumVrijeme" Type="DateTime" Precision="3" />
+          </EntityType>
+        <EntityType Name="sluzbe">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Naziv" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="protokol" Relationship="Self.FK_protokol_sluzbe" FromRole="sluzbe" ToRole="protokol" />
+          <NavigationProperty Name="korisnik1" Relationship="Self.korisniksluzbe" FromRole="sluzbe" ToRole="korisnik" />
+          <Property Name="Naziv_forme" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="korisnik" Relationship="protokolModel.FK_korisnik_sluzbe" FromRole="sluzbe" ToRole="korisnik" />
+        </EntityType>
+        <EntityType Name="tip">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Naziv" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="protokol" Relationship="Self.FK_protokol_tip" FromRole="tip" ToRole="protokol" />
+        </EntityType>
+        <Association Name="FK_dokument_protokol">
+          <End Role="protokol" Type="Self.protokol" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="dokument" Type="Self.dokument" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="protokol">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="dokument">
+              <PropertyRef Name="ID_protokola" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_protokol_sluzbe">
+          <End Role="sluzbe" Type="Self.sluzbe" Multiplicity="1" />
+          <End Role="protokol" Type="Self.protokol" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sluzbe">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="protokol">
+              <PropertyRef Name="ID_sluzbe" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_protokol_tip">
+          <End Role="tip" Type="Self.tip" Multiplicity="1" />
+          <End Role="protokol" Type="Self.protokol" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tip">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="protokol">
+              <PropertyRef Name="ID_tipa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="korisniksluzbe">
+          <End Role="korisnik" Type="Self.korisnik" Multiplicity="*" />
+          <End Role="sluzbe" Type="Self.sluzbe" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="protokolEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="dokument" EntityType="Self.dokument" />
+          <EntitySet Name="korisnik" EntityType="Self.korisnik" />
+          <EntitySet Name="protokol" EntityType="Self.protokol" />
+          <EntitySet Name="sluzbe" EntityType="Self.sluzbe" />
+          <EntitySet Name="tip" EntityType="Self.tip" />
+          <AssociationSet Name="FK_dokument_protokol" Association="Self.FK_dokument_protokol">
+            <End Role="protokol" EntitySet="protokol" />
+            <End Role="dokument" EntitySet="dokument" />
+          </AssociationSet>
+          <AssociationSet Name="FK_protokol_sluzbe" Association="Self.FK_protokol_sluzbe">
+            <End Role="sluzbe" EntitySet="sluzbe" />
+            <End Role="protokol" EntitySet="protokol" />
+          </AssociationSet>
+          <AssociationSet Name="FK_protokol_tip" Association="Self.FK_protokol_tip">
+            <End Role="tip" EntitySet="tip" />
+            <End Role="protokol" EntitySet="protokol" />
+          </AssociationSet>
+          <AssociationSet Name="korisniksluzbe" Association="Self.korisniksluzbe">
+            <End Role="korisnik" EntitySet="korisnik" />
+            <End Role="sluzbe" EntitySet="sluzbe" />
+          </AssociationSet>
+          <AssociationSet Name="FK_korisnik_sluzbe" Association="protokolModel.FK_korisnik_sluzbe">
+            <End Role="sluzbe" EntitySet="sluzbe" />
+            <End Role="korisnik" EntitySet="korisnik" />
+          </AssociationSet>
+          <EntitySet Name="instanca" EntityType="protokolModel.instanca" />
+          <EntitySet Name="promjene" EntityType="protokolModel.promjene" />
+        </EntityContainer>
+        <Association Name="FK_korisnik_sluzbe">
+          <End Type="protokolModel.sluzbe" Role="sluzbe" Multiplicity="1" />
+          <End Type="protokolModel.korisnik" Role="korisnik" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sluzbe">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="korisnik">
+              <PropertyRef Name="ID_sluzbe" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="instanca">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Naziv" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Naziv_forme" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="promjene">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="id_izvorni" Type="Int32" />
+          <Property Name="tbname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="promjena" Type="Int32" />
+          <Property Name="datum" Type="DateTime" Precision="3" />
+          <Property Name="poruka" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="protokolModelStoreContainer" CdmEntityContainer="protokolEntities1">
+    <EntitySetMapping Name="dokument">
+      <EntityTypeMapping TypeName="IsTypeOf(protokolModel.dokument)">
+        <MappingFragment StoreEntitySet="dokument">
+          <ScalarProperty Name="DatumVrijeme" ColumnName="DatumVrijeme" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="ID_protokola" ColumnName="ID_protokola" />
+          <ScalarProperty Name="TipDokumenta" ColumnName="TipDokumenta" />
+          <ScalarProperty Name="Dokument" ColumnName="Dokument" />
+          <ScalarProperty Name="Filename" ColumnName="Filename" />
+          <ScalarProperty Name="Izbrisan" ColumnName="Izbrisan" />
+          <ScalarProperty Name="Opis" ColumnName="Opis" />
+          <ScalarProperty Name="Racunar" ColumnName="Racunar" />
+          <ScalarProperty Name="DatumUnosa" ColumnName="DatumUnosa" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="korisnik">
+      <EntityTypeMapping TypeName="IsTypeOf(protokolModel.korisnik)">
+        <MappingFragment StoreEntitySet="korisnik">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="ID_sluzbe" ColumnName="ID_sluzbe" />
+          <ScalarProperty Name="Naziv" ColumnName="Naziv" />
+          <ScalarProperty Name="canedit" ColumnName="canedit" />
+          <ScalarProperty Name="cannew" ColumnName="cannew" />
+          <ScalarProperty Name="caninsertfile" ColumnName="caninsertfile" />
+          <ScalarProperty Name="canexportexcel" ColumnName="canexportexcel" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="protokol">
+      <EntityTypeMapping TypeName="IsTypeOf(protokolModel.protokol)">
+        <MappingFragment StoreEntitySet="protokol">
+          <ScalarProperty Name="DatumVrijeme" ColumnName="DatumVrijeme" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="ID_sluzbe" ColumnName="ID_sluzbe" />
+          <ScalarProperty Name="redni_broj" ColumnName="redni_broj" />
+          <ScalarProperty Name="datum" ColumnName="datum" />
+          <ScalarProperty Name="datum_distribucije" ColumnName="datum_distribucije" />
+          <ScalarProperty Name="predmet" ColumnName="predmet" />
+          <ScalarProperty Name="veza" ColumnName="veza" />
+          <ScalarProperty Name="razvod" ColumnName="razvod" />
+          <ScalarProperty Name="oznaka_registratora" ColumnName="oznaka_registratora" />
+          <ScalarProperty Name="oznaka_dopisa" ColumnName="oznaka_dopisa" />
+          <ScalarProperty Name="dostava_dopisa" ColumnName="dostava_dopisa" />
+          <ScalarProperty Name="napomena" ColumnName="napomena" />
+          <ScalarProperty Name="arhiva" ColumnName="arhiva" />
+          <ScalarProperty Name="izbrisan" ColumnName="izbrisan" />
+          <ScalarProperty Name="ID_tipa" ColumnName="ID_tipa" />
+          <ScalarProperty Name="Racunar" ColumnName="Racunar" />
+          <ScalarProperty Name="CntDokumenata" ColumnName="CntDokumenata" />
+          </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="sluzbe">
+      <EntityTypeMapping TypeName="IsTypeOf(protokolModel.sluzbe)">
+        <MappingFragment StoreEntitySet="sluzbe">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Naziv" ColumnName="Naziv" />
+          <ScalarProperty Name="Naziv_forme" ColumnName="Naziv_forme" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="tip">
+      <EntityTypeMapping TypeName="IsTypeOf(protokolModel.tip)">
+        <MappingFragment StoreEntitySet="tip">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Naziv" ColumnName="Naziv" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="korisniksluzbe" TypeName="protokolModel.korisniksluzbe" StoreEntitySet="korisniksluzbe">
+            <EndProperty Name="sluzbe">
+              <ScalarProperty Name="ID" ColumnName="sluzba_id" />
+            </EndProperty>
+            <EndProperty Name="korisnik">
+              <ScalarProperty Name="ID" ColumnName="korisnik_id" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="instanca">
+            <EntityTypeMapping TypeName="protokolModel.instanca">
+              <MappingFragment StoreEntitySet="instanca">
+                <ScalarProperty Name="Naziv_forme" ColumnName="Naziv_forme" />
+                <ScalarProperty Name="Naziv" ColumnName="Naziv" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="promjene">
+            <EntityTypeMapping TypeName="protokolModel.promjene">
+              <MappingFragment StoreEntitySet="promjene">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="poruka" ColumnName="poruka" />
+                <ScalarProperty Name="datum" ColumnName="datum" />
+                <ScalarProperty Name="promjena" ColumnName="promjena" />
+                <ScalarProperty Name="tbname" ColumnName="tbname" />
+                <ScalarProperty Name="id_izvorni" ColumnName="id_izvorni" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

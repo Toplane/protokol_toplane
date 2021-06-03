@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f95525cd9d5545cb92d49e817ff9de52" Name="Diagram1" ZoomLevel="64">
+        <EntityTypeShape EntityType="protokolModel.dokument" Width="1.5" PointX="10.75" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="protokolModel.korisnik" Width="1.5" PointX="3.625" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="protokolModel.protokol" Width="1.5" PointX="6" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="protokolModel.sluzbe" Width="1.5" PointX="0.75" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="protokolModel.tip" Width="1.5" PointX="2.75" PointY="2.125" IsExpanded="true" />
+        <AssociationConnector Association="protokolModel.FK_dokument_protokol" ManuallyRouted="false" />
+        <AssociationConnector Association="protokolModel.FK_korisnik_sluzbe" ManuallyRouted="false" />
+        <AssociationConnector Association="protokolModel.FK_protokol_sluzbe" ManuallyRouted="false" />
+        <AssociationConnector Association="protokolModel.FK_protokol_tip" ManuallyRouted="false" />
+        <AssociationConnector Association="protokolModel.korisniksluzbe" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
