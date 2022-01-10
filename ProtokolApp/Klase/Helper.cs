@@ -5,6 +5,8 @@ using System.Data.Entity.Core.EntityClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
@@ -19,7 +21,7 @@ using Telerik.WinControls.UI.Export;
 
 namespace ProtokolApp
 {
-
+    
 
     class Helper
     {
@@ -134,53 +136,17 @@ namespace ProtokolApp
             return canInsertNewFile != 0 ? true : false;
         }
 
-
-        public static void UnesiInstancu(int idKorisnika)
+        public static string GetLocalIpAddress()
         {
-            using (var context = new protokolEntities1(Helper.ProcitajEntityConnectionString()))
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+
+            foreach (var ipAddress in host.AddressList)
             {
-                var korisnik = context.korisnik.Where(i => i.ID == idKorisnika).FirstOrDefault();
-                var inst = new instanca();
-                inst.Naziv = korisnik.Naziv;
-                inst.Naziv_forme = "Aktivan";
-
-                context.instanca.Add(inst);
-                context.SaveChanges();
-            }
-        }
-
-        public static bool DaLiJeAktivan(string nazivKorisnika)
-        {
-            bool aktivan = false;
-            using (var context = new protokolEntities1(ProcitajEntityConnectionString()))
-            {
-                try
-                {
-                    var ins = context.instanca.Where(k => k.Naziv.Equals(nazivKorisnika)).OrderByDescending(k => k.ID)
-                        .Any();
-                    return ins;
-
-                }
-                catch (Exception ex)
-                {
-                    //RadMessageBox.Show(ex.ToString());
-
-                    return false;
-                }
-
+                if (ipAddress.AddressFamily == AddressFamily.InterNetwork && ipAddress.ToString().StartsWith("192"))
+                    return ipAddress.ToString();
             }
 
-            return aktivan;
-        }
-
-        public static void IzbrisiSesije(string nazivKorisnika)
-        {
-            using (var context = new protokolEntities1(ProcitajEntityConnectionString()))
-            {
-                var ins = context.instanca.Where(k => k.Naziv.Equals(nazivKorisnika));
-                context.instanca.RemoveRange(ins);
-                context.SaveChanges();
-            }
+            return string.Empty;
         }
 
         public static List<int> GetGodineProtokola(int idSluzbe)
@@ -230,7 +196,8 @@ namespace ProtokolApp
             {
                 using (var context = new protokolEntities1(Helper.ProcitajEntityConnectionString()))
                 {
-                    broj = (int) context.protokol.Where(p => p.datum.Value.Year == year && p.ID_sluzbe == sluzba && p.izbrisan == 0 )
+                    broj = (int) context.protokol.Where(p =>
+                            p.datum.Value.Year == year && p.ID_sluzbe == sluzba && p.izbrisan == 0)
                         .Select(p => p.redni_broj).Max();
                     
                 }
@@ -326,9 +293,10 @@ namespace ProtokolApp
                 {
                     protokol p = new protokol();
 
-                    var slu = context.sluzbe.Where(s => s.ID == idSluzbe).Select(s => s).FirstOrDefault();
-                    p.sluzbe = slu;
+                    //var slu = context.sluzbe.Where(s => s.ID == idSluzbe).Select(s => s).FirstOrDefault();
+                   // p.sluzbe = slu;
 
+                    p.ID_sluzbe = idSluzbe;
                     p.redni_broj = rednibroj;
                     p.ID_tipa = tipDokumentaUlazIzlaz;
                     p.datum = datum;
@@ -376,9 +344,9 @@ namespace ProtokolApp
             }
             catch (Exception ex)
             {
-#if DEBUG
+
                 MessageBox.Show(ex.ToString());
-#endif
+
                 return false;
             }
 

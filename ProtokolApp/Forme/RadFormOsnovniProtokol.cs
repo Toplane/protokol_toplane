@@ -13,6 +13,7 @@ using System.DirectoryServices;
 using Telerik.WinControls;
 using Telerik.WinControls.UI;
 using System.IO;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Xml;
@@ -26,6 +27,8 @@ using TableDependency;
 using TableDependency.SqlClient;
 using TableDependency.SqlClient.Base.Enums;
 using TableDependency.SqlClient.Base.EventArgs;
+using EntityFramework.Triggers;
+
 
 namespace ProtokolApp
 {
@@ -67,7 +70,6 @@ namespace ProtokolApp
 
         public RadFormOsnovniProtokol()
         {
-
             
             InitializeComponent();
         }
@@ -77,7 +79,7 @@ namespace ProtokolApp
         private protokolEntities1 dokumentProtokolEntities;
         private BindingList<protokol> blProtokols = new BindingList<protokol>();
 
-
+        
         void IzmjeneDokumentEventHandler(object sender, RecordChangedEventArgs<dokument> e)
         {
             if (blProtokols.Any(d => d.ID == e.Entity.ID_protokola))
@@ -152,11 +154,85 @@ namespace ProtokolApp
             }
         }
 
+        private void TrackChanges(protokol old, protokol novi)
+        {
+            StringBuilder sb = new StringBuilder();
+            string propertyName = novi.GetType().Name;
+            int id = old.ID;
+            int idNew = novi.ID;
+            DateTime datumpromjene = DateTime.Now;
+
+            using (var context = new protokolEntities1(Helper.ProcitajEntityConnectionString()))
+            {
+                
+                for (int i = 0; i < novi.GetType().GetProperties().Length; i++)
+                {
+                    //Obje vrijednosti postoje, treba provjeriti da li su mijenjane
+                    if (novi.GetType().GetProperties()[i].GetValue(novi, null) != null &&
+                        old.GetType().GetProperties()[i].GetValue(old, null) != null)
+                    {
+                        if (novi.GetType().GetProperties()[i].GetValue(novi, null).ToString() !=
+                            old.GetType().GetProperties()[i].GetValue(old, null).ToString())
+                        {
+                            sb.AppendLine(string.Format("Nova vrijednost polja {0} je {1}, stara vrijernost je {2}.",
+                                 novi.GetType().GetProperties()[i].Name,
+                                 novi.GetType().GetProperties()[i].GetValue(novi, null).ToString(),
+                                 old.GetType().GetProperties()[i].GetValue(old, null)));
+                        }
+
+                    }
+                    //Stara vrijednost je bila prazno polje
+                    if (novi.GetType().GetProperties()[i].GetValue(novi, null) != null &&
+                        (old.GetType().GetProperties()[i].GetValue(old, null) == null ||
+                         old.GetType().GetProperties()[i].GetValue(old, null).ToString().Length == 0))
+                    {
+                        sb.AppendLine(string.Format("Nova vrijednost polja {0} je {1}, stara vrijernost je bila prazno polje.",
+                            novi.GetType().GetProperties()[i].Name,
+                            novi.GetType().GetProperties()[i].GetValue(novi, null)));
+                    }
+
+                    //Stara vrijednost je promijenjena u prazno polje
+                    if (old.GetType().GetProperties()[i].GetValue(old, null) != null &&
+                        (novi.GetType().GetProperties()[i].GetValue(novi, null) == null ||
+                         novi.GetType().GetProperties()[i].GetValue(novi, null).ToString().Length == 0))
+                    {
+                        sb.AppendLine(string.Format("Stara vrijednost polja {0} je bila {1}, nova vrijernost je  prazno polje.",
+                            old.GetType().GetProperties()[i].Name,
+                            old.GetType().GetProperties()[i].GetValue(old, null)));
+                    }
+                }
+
+                if (sb.ToString().Length > 0)
+                {
+                    log_promjena log = new log_promjena
+                    {
+                        Datum_promjene = datumpromjene,
+                        ID_izvorni = id,
+                        ID_izvorni_novi =idNew,
+                        naziv_polja = propertyName,
+                        Promjena = sb.ToString(),
+                        korisnikapp = System.DirectoryServices.AccountManagement.UserPrincipal.Current.DisplayName,
+                        imeracunara = System.Environment.MachineName,
+                        ipAdresa = Helper.GetLocalIpAddress()
+
+                    };
+
+
+                    context.log_promjena.Add(log);
+                    
+                    context.SaveChanges();
+                    trackChangesUpdateProtokol = false;
+                }
+            }
+
+        }
+
         void IzmjeneProtokolEventHandler(object sender, RecordChangedEventArgs<protokol> e)
         {
-
+           
             if (e.Entity.ID_sluzbe == (int)radDropDownList1.SelectedItem.Value)
             {
+               
                 switch (e.ChangeType)
                 {
                     case ChangeType.Insert:
@@ -164,12 +240,24 @@ namespace ProtokolApp
                         {
                             radGridView1.Invoke((MethodInvoker) delegate
                             {
+
                                 var trenutniRed = radGridView1.CurrentRow;
                                 mainProtokolEntities.protokol.Attach(e.Entity);
                                 mainProtokolEntities.Entry(e.Entity).Reload();
-                                FormatirajGrid();
 
-                                radGridView1.CurrentRow = trenutniRed;
+                                if (radGridView1.GridViewElement.IsInEditMode)
+                                {
+                                    radGridView1.CurrentRow = trenutniRed;
+                                    FormatirajGrid();
+                                    return;
+                                }
+
+                                else
+                                {
+                                  //  radGridView1.TableElement.ScrollToRow(trenutniRed);
+                                    FormatirajGrid();
+                                }
+
 
                             });
 
@@ -188,9 +276,10 @@ namespace ProtokolApp
 
                         radGridView1.Invoke((MethodInvoker) delegate
                         {
+
                             bool brisan = false;
                             var trenutniRed = radGridView1.CurrentRow;
-
+                            var trenutniRedIndex = trenutniRed.Index;
                             protokol entity = mainProtokolEntities.protokol.Find(e.Entity.ID);
                             mainProtokolEntities.Entry(entity).Reload();
                             if (e.EntityOldValues.izbrisan == 0 && e.Entity.izbrisan == 1)
@@ -198,6 +287,13 @@ namespace ProtokolApp
                                 mainProtokolEntities.Entry(entity).State = EntityState.Detached;
                                 FormatirajGrid();
                                 brisan = true;
+                                if (radGridView1.Rows.Count > 0)
+                                {
+                                    if (radGridView1 != null)
+                                        radGridView1.CurrentRow = radGridView1.Rows.FirstOrDefault(d => d.Index == trenutniRedIndex - 1);
+                                }
+                                
+
 
                             }
 
@@ -205,7 +301,12 @@ namespace ProtokolApp
                             {
                                 radGridView1.CurrentRow = trenutniRed;
                             }
-                            
+
+                            if (trackChangesUpdateProtokol)
+                            {
+                                TrackChanges(e.EntityOldValues, e.Entity);
+                            }
+
                         });
 
 
@@ -230,9 +331,9 @@ namespace ProtokolApp
 
         private SqlTableDependency<protokol> depProtokol;
         private SqlTableDependency<dokument> depDokument;
+        private bool trackChangesUpdateProtokol = false;
         private  void FrmOsnovni_Load(object sender, EventArgs e)
         {
-            
 
             depProtokol = new SqlTableDependency<protokol>(Helper.ProcitajConnectionString(), null, null, null, null, null, DmlTriggerType.All, true, true);
             depProtokol.OnChanged += IzmjeneProtokolEventHandler;
@@ -242,6 +343,10 @@ namespace ProtokolApp
             depDokument.OnChanged += IzmjeneDokumentEventHandler;
             depDokument.Start();
 
+            Triggers<protokol>.Updated += j =>
+            {
+                trackChangesUpdateProtokol = true;
+            };
             //radGridView1.EnablePaging = true;
             //radGridView1.PageSize = 200;
             try
@@ -263,10 +368,8 @@ namespace ProtokolApp
             {
                 MessageBox.Show("Korisnik nije definiran u bazi");
             }
-            
-            
 
-            List < sluzbe > sluzbeList = Helper.GetSluzbeZaKorisnika(_idKorisnika);
+            List<sluzbe> sluzbeList = Helper.GetSluzbeZaKorisnika(_idKorisnika);
             if (sluzbeList.Count > 0)
             {
                 radDropDownList1.Visible = true;
@@ -274,13 +377,25 @@ namespace ProtokolApp
                 radLabel1.Visible = true;
                 radDropDownList1.Visible = true;
 
+                radDropDownBrojDana.ValueMember = "BrojDana";
+                radDropDownBrojDana.DisplayMember = "Naziv";
+                DaysBackList daysBackList = new DaysBackList();
+                radDropDownBrojDana.DataSource = daysBackList.daysBacks;
+
+
+
             }
+
+
+
+
 
             
             else
             {
                 //_idSluzbe = Helper.GetIDSluzbe(Environment.UserName);
             }
+
 
             if (!Helper.CanEdit(Environment.UserName))
             {
@@ -301,13 +416,19 @@ namespace ProtokolApp
 
             string user = System.DirectoryServices.AccountManagement.UserPrincipal.Current.DisplayName;
             this.Text = "Protokol - " + user + " - " + radDropDownList1.SelectedItem.Text;
-            if (File.Exists(Directory.GetCurrentDirectory() + "\\MainLayout.xml"))
+            if (_idSluzbe!=1 && _idSluzbe!=9)
             {
-                radGridView1.LoadLayout(Directory.GetCurrentDirectory() + "\\MainLayout.xml");
-                
+                if (File.Exists(Directory.GetCurrentDirectory() + "\\MainLayout.xml"))
+                {
+                    radGridView1.LoadLayout(Directory.GetCurrentDirectory() + "\\MainLayout.xml");
+
+                }
             }
+
             //radGridView2.Rows.Clear();
             //radGridView1.DataSource = await Task.Run(() => Citaj(_idSluzbe));
+
+
 
             RadGridLocalizationProvider.CurrentProvider = new MYCustomLocalizationProvider();
 
@@ -321,47 +442,64 @@ namespace ProtokolApp
 
 
 
-
-        public async Task<BindingList<protokol>> Citaj(int id_sluzbe, int? godina)
+        public static IEnumerable<List<T>> SplitList<T>(List<T> lista, int nSize = 10000)
         {
+            for (int i = 0; i < lista.Count; i += nSize)
+            {
+                yield return lista.GetRange(i, Math.Min(nSize, lista.Count - i));
+            }
+        }
+        public async Task<BindingList<protokol>> Citaj(int id_sluzbe, DateTime? limitDateTime)
+        {
+            //limitDateTime = DateTime.Now.AddDays(-7);
             try
             {
 
-                    mainProtokolEntities = new protokolEntities1(Helper.ProcitajEntityConnectionString());
-
-
+                mainProtokolEntities = new protokolEntities1(Helper.ProcitajEntityConnectionString());
                 
-                if (id_sluzbe != 6)
-                {
+                    if (limitDateTime is null)
+                    {
+
+                    await  mainProtokolEntities.protokol
+                        .Where(pr => pr.ID_sluzbe == id_sluzbe && pr.izbrisan == 0)
+                        .OrderByDescending(ii => ii.ID).LoadAsync();
+
+                    //await Task.Run()) => mainProtokolEntities.protokol
+                    //    .Where(pr => pr.ID_sluzbe == id_sluzbe && pr.izbrisan == 0)
+                    //    .OrderByDescending(ii => ii.ID).LoadAsync();
+
+                }
+                else
+                    {
+                        await  mainProtokolEntities.protokol.Where(pr => pr.ID_sluzbe == id_sluzbe && pr.izbrisan == 0 && pr.datum >= limitDateTime)
+                            .OrderByDescending(ii => ii.ID).LoadAsync();
+                    }
+                
+
+
+
+                    //if (id_sluzbe != 6)
+                    //{
                     //await mainProtokolEntities.protokol.Where(pr => pr.ID_sluzbe == id_sluzbe && pr.izbrisan == 0)
                     //    .OrderByDescending(ii => ii.ID).LoadAsync();
                     //await mainProtokolEntities.protokol.Include(s => s.dokument).Where(pr => pr.ID_sluzbe == id_sluzbe && pr.izbrisan == 0)
                     //    .OrderByDescending(ii => ii.ID).LoadAsync();
-                    if (godina is null)
-                    {
-                        await mainProtokolEntities.protokol.Where(pr => pr.ID_sluzbe == id_sluzbe && pr.izbrisan == 0)
-                            .OrderByDescending(ii => ii.ID).LoadAsync();
-                    }
-                    else
-                    {
-                        await mainProtokolEntities.protokol.Where(pr => pr.ID_sluzbe == id_sluzbe && pr.izbrisan == 0 && pr.datum.Value.Year==godina)
-                            .OrderByDescending(ii => ii.ID).LoadAsync();
-                    }
-
-                }
-                else
-                {
-                    await mainProtokolEntities.protokol.Where(pr => pr.ID_sluzbe == id_sluzbe && pr.izbrisan == 0)
-                        .OrderByDescending(ii => ii.ID).LoadAsync();
-                    if (godina is null)
-                    {
-                        await mainProtokolEntities.protokol.Where(pr => pr.ID_sluzbe == id_sluzbe && pr.izbrisan == 0 && pr.datum.Value.Year == godina)
-                            .OrderByDescending(ii => ii.ID).LoadAsync();
-                    }
 
 
-                }
-                
+                // }
+                //else
+                //{
+                //    await mainProtokolEntities.protokol.Where(pr => pr.ID_sluzbe == id_sluzbe && pr.izbrisan == 0)
+                //        .OrderByDescending(ii => ii.ID).LoadAsync();
+                //    if (limitDateTime is null)
+                //    {
+                //        await mainProtokolEntities.protokol.Where(pr => pr.ID_sluzbe == id_sluzbe && pr.izbrisan == 0 && pr.datum >= limitDateTime)
+                //            .OrderByDescending(ii => ii.ID).LoadAsync();
+                //    }
+
+
+                //}
+
                 return mainProtokolEntities.protokol.Local.ToBindingList();
                 
             }
@@ -443,9 +581,159 @@ namespace ProtokolApp
 
 
 
+
+
+                if (_idSluzbe == 1)
+                {
+                    using (XmlReader w =
+                        XmlReader.Create(Directory.GetCurrentDirectory() + string.Format("\\MainLayout{0}.xml", _idSluzbe)))
+                    {
+                        radGridView1.LoadLayout(w);
+
+                    }
+                    //// StringBuilder sb = new StringBuilder();
+                    //for (int i = 0; i < radGridView1.Columns.Count; i++)
+                    //{
+                    //    switch (radGridView1.Columns[i].Name)
+                    //    {
+                    //        case "redni_broj":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 0);
+
+                    //            break;
+
+                    //        case "datum":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 1);
+
+                    //            break;
+
+                    //        case "ime":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 2);
+
+                    //            break;
+
+                    //        case "datum_distribucije":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 3);
+
+                    //            break;
+
+                    //        case "predmet":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 5);
+
+                    //            break;
+                    //        case "veza":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 6);
+
+                    //            break;
+                    //        case "razvod":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 7);
+
+                    //            break;
+                    //        case "oznaka_registratora":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 8);
+
+                    //            break;
+
+                    //        case "arhiva":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index,9);
+                    //            break;
+
+                    //        case "oznaka_dopisa":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 10);
+
+                    //            break;
+
+
+                    //        case "dostava":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 11);
+
+                    //            break;
+                    //        case "napomena":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 12);
+
+                    //            break;
+
+                    //        case "brojDokumenata":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 13);
+
+                    //            break;
+
+                    //        default:
+
+                    //            break;
+                    //    }
+
+                    //}
+                }
+
+                //}
+                if (_idSluzbe == 9)
+                {
+                    using (XmlReader w =
+                        XmlReader.Create(Directory.GetCurrentDirectory() + string.Format("\\MainLayout{0}.xml", _idSluzbe)))
+                    {
+                        radGridView1.LoadLayout(w);
+
+                    }
+                    //for (int i = 0; i < radGridView1.Columns.Count; i++)
+                    //{
+                    //    switch (radGridView1.Columns[i].Name)
+                    //    {
+                    //        case "redni_broj":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 0);
+
+                    //            break;
+
+                    //        case "datum":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 1);
+
+                    //            break;
+
+                    //        case "ime": //tip dokumenta
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 2);
+
+                    //            break;
+                    //        case "predmet"://broj racuna
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 3);
+
+                    //            break;
+                    //        case "razvod"://posiljalac
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 5);
+
+                    //            break;
+                    //        case "dostava_dopisa": //iznos
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 6);
+
+                    //            break;
+                    //        case "arhiva":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 7);
+
+                    //            break;
+                    //        case "veza"://kome je signiran
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 8);
+
+                    //            break;
+
+                    //        case "napomena":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 9);
+
+                    //            break; 
+
+                    //        case "brojDokumenata":
+                    //            radGridView1.Columns.Move(radGridView1.Columns[i].Index, 10);
+
+                    //            break;
+
+                    //        default:
+
+                    //            break;
+                    //    }
+
+                    //}
+                }
+
                 for (int i = 0; i < radGridView1.RowCount; i++)
                 {
-                    if ((int) radGridView1.Rows[i].Cells["brojDokumenata"].Value > 0)
+                    if ((int)radGridView1.Rows[i].Cells["brojDokumenata"].Value > 0)
                     {
                         foreach (GridViewCellInfo c in radGridView1.Rows[i].Cells)
                         {
@@ -473,7 +761,6 @@ namespace ProtokolApp
 
                 }
 
-
                 radGridView1.MasterView.TableSearchRow.ResumeSearch();
             }
             catch (Exception ex)
@@ -489,6 +776,9 @@ namespace ProtokolApp
         {
 
             FormatirajGrid();
+
+            //radGridView1.AllowColumnReorder = true;
+            //radGridView1.Columns.Move(17, 2);
 
         }
 
@@ -771,6 +1061,7 @@ namespace ProtokolApp
             {
                 radWaitingBar2.Text = "Učitavam podatke";
                 radWaitingBar2.StartWaiting();
+                
                 radGridView2.Rows.Clear();
               // radGridView1.DataSource = await Task.Run(() => Citaj(_idSluzbe, null));
                 
@@ -824,6 +1115,15 @@ namespace ProtokolApp
                 editirano = false;
                 
                 mainProtokolEntities.SaveChanges();
+                if (_idSluzbe != 1 && _idSluzbe != 9)
+                {
+                    using (XmlWriter w = XmlWriter.Create(Directory.GetCurrentDirectory() + "\\MainLayout.xml"))
+                    {
+                        radGridView1.SaveLayout(w);
+
+                    }
+                }
+
                 //RadMessageBox.ThemeName = "Office2010Silver";
                 //RadMessageBox.Show("IzmjeneProtokolEventHandler spašene");
                 ChangeMouseOverState(radButton3, 0);
@@ -851,6 +1151,7 @@ namespace ProtokolApp
             
         }
 
+
         private void radGridView1_CellEditorInitialized(object sender, GridViewCellEventArgs e)
         {
             //if (e.ActiveEditor is MyAutoCompleteEditor)
@@ -867,6 +1168,7 @@ namespace ProtokolApp
             //}
             if (e.RowIndex != -1) // Filter row
             {
+
                 editirano = true;
                 ChangeMouseOverState(radButton3, 1);
             }
@@ -949,21 +1251,16 @@ namespace ProtokolApp
                if (RadMessageBox.Show("Da li zelite spasiti izmjene?", "Pitanje", MessageBoxButtons.YesNo) == DialogResult.Yes)
                {
                    radButton3.PerformClick();
-               }
+
+                }
             }
 
-           try
-           {
-               using (XmlWriter w = XmlWriter.Create(Directory.GetCurrentDirectory() + "\\MainLayout.xml"))
-               {
-                   radGridView1.SaveLayout(w);
 
-               }
-            }
-
-            catch { }
             depProtokol.Stop();
             depDokument.Stop();
+            mainProtokolEntities.Dispose();
+            dokumentProtokolEntities.Dispose();
+            protokolBindingSource.Dispose();
            //Helper.IzbrisiSesije(Environment.UserName);
 
         }
@@ -1030,29 +1327,47 @@ namespace ProtokolApp
 #endregion
         private async void radDropDownList1_SelectedIndexChanged(object sender, Telerik.WinControls.UI.Data.PositionChangedEventArgs e)
         {
-            radWaitingBar2.Text = "Učitavam podatke";
+             Fill();
+        }
+
+        private async void Fill()
+        {
+
+            // radWaitingBar2.Text = "Učitavam podatke";
             radWaitingBar2.StartWaiting();
-             _idSluzbe = (int) radDropDownList1.SelectedItem.Value;
+            _idSluzbe = (int)radDropDownList1.SelectedItem.Value;
 
             radGridView2.Rows.Clear();
-             this.Text = "Protokol - " + Environment.UserName + " - " + radDropDownList1.SelectedItem.Text;
-             try
-             {
 
-               blProtokols = await Task.Run(() => Citaj(_idSluzbe,  null));
-               radGridView1.DataSource = blProtokols;
-              
+            this.Text = "Protokol - " + Environment.UserName + " - " + radDropDownList1.SelectedItem.Text;
+            try
+            {
+
+                // blProtokols = await Task.Run(() => Citaj(_idSluzbe,  null));
+                //radGridView1.DataSource = blProtokols = await Task.Run(() => Citaj(_idSluzbe, null));
+                if ((double)radDropDownBrojDana.SelectedValue == 0)
+                {
+                    radGridView1.DataSource = blProtokols = await Citaj(_idSluzbe, null);
+                   
+                }
+                else
+                {
+                    DateTime dateTime = DateTime.Now.AddDays((double)radDropDownBrojDana.SelectedValue);
+                    radGridView1.DataSource = blProtokols = await Citaj(_idSluzbe, dateTime);
+                }
+
+
             }
-             catch (Exception ex)
-             {
+            catch (Exception ex)
+            {
 
-                  //   RadMessageBox.Show("Doslo je do greske, kontaktirajte administratora!");
+                //   RadMessageBox.Show("Doslo je do greske, kontaktirajte administratora!");
 
 
-             }
+            }
 
-            
-            radWaitingBar2.Text = "";
+
+            // radWaitingBar2.Text = "";
             radWaitingBar2.StopWaiting();
             try
             {
@@ -1068,7 +1383,7 @@ namespace ProtokolApp
                                 break;
 
                             case "dostava_dopisa":
-                                c.HeaderText= "Iznos";
+                                c.HeaderText = "Iznos";
                                 break;
 
                             case "razvod":
@@ -1080,6 +1395,8 @@ namespace ProtokolApp
                                 break;
                         }
 
+
+
                     }
 
                 }
@@ -1090,6 +1407,7 @@ namespace ProtokolApp
                     {
                         switch (c.Name)
                         {
+
                             case "predmet":
 
                                 c.HeaderText = "Predmet";
@@ -1191,6 +1509,7 @@ namespace ProtokolApp
                     sheet.Cell(1, 12).Value = "Veza";
 
                     int brojreda = 2;
+                    int brojac = 1;
                     foreach (protokol p in protokolList)
                     {
                         sheet.Cell(brojreda, 1).Value = p.redni_broj;
@@ -1225,7 +1544,7 @@ namespace ProtokolApp
                         sheet.Cell(brojreda, 11).Value = p.razvod;
                         sheet.Cell(brojreda, 12).Value = p.veza;
 
-                        progress.Report("Spasavam fileove i kreiram linkove...");
+                        progress.Report($"Spasavam fileove i kreiram linkove... red broj {brojac} od ukupno {protokolList.Count} redova");
                         
                         var _dokumenti = p.dokument.Where(d => d.Izbrisan == 0).Take(p.dokument.Count);
 
@@ -1308,6 +1627,7 @@ namespace ProtokolApp
 
 
                         brojreda++;
+                        brojac++;
                     }
                     progress.Report("Formatiram Excel file...");
                     sheet.Column(1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
@@ -1381,49 +1701,102 @@ namespace ProtokolApp
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            Progress<List<protokol>> novaLista = new Progress<List<protokol>>();
-            int maxId = mainProtokolEntities.protokol.Local.Where(d => d.ID_sluzbe == _idSluzbe).Max(d => d.ID);
-            novaLista.ProgressChanged += (o, s) =>
-            {
-                foreach (var p in s)
-                {
-                    mainProtokolEntities.protokol.Attach(p);
-                }
-                
-                FormatirajGrid();
-                Selektiraj(s.Max(d=>d.ID));
-            };
 
-            var izmjeneProgress = new Progress<List<protokol>>();
 
-            izmjeneProgress.ProgressChanged += (o, s) =>
-            {
-                if (s.Any())
-                {
-                    foreach (var i in s)
-                    {
-                        var entity = mainProtokolEntities.protokol.Find(i.ID);
-                        if (entity != null)
-                        {
-                            mainProtokolEntities.Entry(entity).Reload();
-                           
-                        }
-                    }
-                        blProtokols= mainProtokolEntities.protokol.Local.ToBindingList();
-                        radGridView1.DataSource = blProtokols;
-                        
-                }
+            //radWaitingBar2.StartWaiting();
+            //radGridView1.DataSource = blProtokols = Task.Run(async () => await Citaj(_idSluzbe, null)).Result;
+            //radWaitingBar2.StopWaiting();
+            // Progress<List<protokol>> novaLista = new Progress<List<protokol>>();
+            // int maxId = mainProtokolEntities.protokol.Local.Where(d => d.ID_sluzbe == _idSluzbe).Max(d => d.ID);
+            // novaLista.ProgressChanged += (o, s) =>
+            // {
+            //     foreach (var p in s)
+            //     {
+            //         mainProtokolEntities.protokol.Attach(p);
+            //     }
 
-            };
+            //     FormatirajGrid();
+            //     Selektiraj(s.Max(d=>d.ID));
+            // };
 
-            Task.Run(() => Updateovani(izmjeneProgress, _idSluzbe));
-            Task.Run(() => OsvjeziListu(novaLista, maxId, _idSluzbe));
+            // var izmjeneProgress = new Progress<List<protokol>>();
+
+            // izmjeneProgress.ProgressChanged += (o, s) =>
+            // {
+            //     if (s.Any())
+            //     {
+            //         foreach (var i in s)
+            //         {
+            //             var entity = mainProtokolEntities.protokol.Find(i.ID);
+            //             if (entity != null)
+            //             {
+            //                 mainProtokolEntities.Entry(entity).Reload();
+
+            //             }
+            //         }
+            //             blProtokols= mainProtokolEntities.protokol.Local.ToBindingList();
+            //             radGridView1.DataSource = blProtokols;
+
+            //     }
+
+            // };
+
+            //await Task.Run(() => Updateovani(izmjeneProgress, _idSluzbe));
+            // await Task.Run(() => OsvjeziListu(novaLista, maxId, _idSluzbe));
 
         }
 
+        private void RadFormOsnovniProtokol_Activated(object sender, EventArgs e)
+        {
+        }
 
+        private void RadFormOsnovniProtokol_Shown(object sender, EventArgs e)
+        {
+           
+        }
 
+        private void RadFormOsnovniProtokol_Resize(object sender, EventArgs e)
+        {
+            if ((WindowState == FormWindowState.Normal || WindowState == FormWindowState.Maximized))
+            {
+                radGridView1.TableElement.ScrollToRow(radGridView1.CurrentRow);
+            }
+        }
 
+        private void MasterTemplate_UserAddedRow(object sender, GridViewRowEventArgs e)
+        {
+            e.Row.Cells["ID"].Value = Helper.GetNextMaxBrojProtokola(_idSluzbe, DateTime.Now.Year);
+        }
+
+        private void MasterTemplate_UserAddingRow(object sender, GridViewRowCancelEventArgs e)
+        {
+
+        }
+
+        private void radDropDownBrojDana_SelectedIndexChanged(object sender, Telerik.WinControls.UI.Data.PositionChangedEventArgs e)
+        {
+            Fill();
+        }
+
+        private void radButton5_Click_2(object sender, EventArgs e)
+        {
+            using (XmlWriter w =
+                XmlWriter.Create(Directory.GetCurrentDirectory() + string.Format("\\MainLayout{0}.xml", _idSluzbe)))
+            {
+                radGridView1.SaveLayout(w);
+
+            }
+        }
+
+        private void radButton6_Click(object sender, EventArgs e)
+        {
+            using (XmlReader w =
+                XmlReader.Create(Directory.GetCurrentDirectory() + string.Format("\\MainLayout{0}.xml", _idSluzbe)))
+            {
+                radGridView1.LoadLayout(w);
+
+            }
+        }
     }
 }
 

@@ -32,8 +32,6 @@ namespace ProtokolApp
         {
             this.components = new System.ComponentModel.Container();
             Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn1 = new Telerik.WinControls.UI.GridViewDecimalColumn();
-            Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn2 = new Telerik.WinControls.UI.GridViewDecimalColumn();
-            Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn3 = new Telerik.WinControls.UI.GridViewDecimalColumn();
             Telerik.WinControls.UI.GridViewDateTimeColumn gridViewDateTimeColumn1 = new Telerik.WinControls.UI.GridViewDateTimeColumn();
             Telerik.WinControls.UI.GridViewDateTimeColumn gridViewDateTimeColumn2 = new Telerik.WinControls.UI.GridViewDateTimeColumn();
             Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn1 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
@@ -43,14 +41,16 @@ namespace ProtokolApp
             Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn5 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
             Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn6 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
             Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn7 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
-            Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn4 = new Telerik.WinControls.UI.GridViewDecimalColumn();
             Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn8 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
-            Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn5 = new Telerik.WinControls.UI.GridViewDecimalColumn();
             Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn9 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
             Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn10 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
             Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn11 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
-            Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn12 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
             Telerik.WinControls.UI.GridViewDateTimeColumn gridViewDateTimeColumn3 = new Telerik.WinControls.UI.GridViewDateTimeColumn();
+            Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn2 = new Telerik.WinControls.UI.GridViewDecimalColumn();
+            Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn3 = new Telerik.WinControls.UI.GridViewDecimalColumn();
+            Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn4 = new Telerik.WinControls.UI.GridViewDecimalColumn();
+            Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn5 = new Telerik.WinControls.UI.GridViewDecimalColumn();
+            Telerik.WinControls.UI.GridViewTextBoxColumn gridViewTextBoxColumn12 = new Telerik.WinControls.UI.GridViewTextBoxColumn();
             Telerik.WinControls.UI.TableViewDefinition tableViewDefinition1 = new Telerik.WinControls.UI.TableViewDefinition();
             Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn6 = new Telerik.WinControls.UI.GridViewDecimalColumn();
             Telerik.WinControls.UI.GridViewDecimalColumn gridViewDecimalColumn7 = new Telerik.WinControls.UI.GridViewDecimalColumn();
@@ -65,6 +65,9 @@ namespace ProtokolApp
             this.radGridView1 = new Telerik.WinControls.UI.RadGridView();
             this.protokolBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.radGroupBox1 = new Telerik.WinControls.UI.RadGroupBox();
+            this.radButton6 = new Telerik.WinControls.UI.RadButton();
+            this.radButton5 = new Telerik.WinControls.UI.RadButton();
+            this.radDropDownBrojDana = new Telerik.WinControls.UI.RadDropDownList();
             this.button1 = new System.Windows.Forms.Button();
             this.radWaitingBar2 = new Telerik.WinControls.UI.RadWaitingBar();
             this.lineRingWaitingBarIndicatorElement2 = new Telerik.WinControls.UI.LineRingWaitingBarIndicatorElement();
@@ -85,11 +88,16 @@ namespace ProtokolApp
             this.radFormConverter1 = new Telerik.WinControls.UI.RadFormConverter();
             this.radTabbedFormControl1 = new Telerik.WinControls.UI.RadTabbedFormControl();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.radContextMenu1 = new Telerik.WinControls.UI.RadContextMenu(this.components);
+            this.radMenuItem1 = new Telerik.WinControls.UI.RadMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.radGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radGridView1.MasterTemplate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.protokolBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radGroupBox1)).BeginInit();
             this.radGroupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.radButton6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radButton5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radDropDownBrojDana)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radWaitingBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.lblExportExcel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.radButton1)).BeginInit();
@@ -112,7 +120,6 @@ namespace ProtokolApp
             // 
             // radGridView1
             // 
-            this.radGridView1.AutoScroll = true;
             this.radGridView1.AutoSizeRows = true;
             this.radGridView1.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.radGridView1.Cursor = System.Windows.Forms.Cursors.Default;
@@ -127,34 +134,16 @@ namespace ProtokolApp
             this.radGridView1.MasterTemplate.AllowAddNewRow = false;
             this.radGridView1.MasterTemplate.AllowCellContextMenu = false;
             this.radGridView1.MasterTemplate.AllowDeleteRow = false;
-            this.radGridView1.MasterTemplate.AllowRowReorder = true;
             this.radGridView1.MasterTemplate.AllowSearchRow = true;
-            gridViewDecimalColumn1.DataType = typeof(int);
+            this.radGridView1.MasterTemplate.AutoGenerateColumns = false;
+            gridViewDecimalColumn1.DataType = typeof(System.Nullable<int>);
             gridViewDecimalColumn1.EnableExpressionEditor = false;
-            gridViewDecimalColumn1.FieldName = "ID";
-            gridViewDecimalColumn1.HeaderText = "ID";
+            gridViewDecimalColumn1.FieldName = "redni_broj";
+            gridViewDecimalColumn1.HeaderText = "Redni broj";
             gridViewDecimalColumn1.IsAutoGenerated = true;
-            gridViewDecimalColumn1.IsVisible = false;
-            gridViewDecimalColumn1.Name = "ID";
-            gridViewDecimalColumn1.VisibleInColumnChooser = false;
-            gridViewDecimalColumn1.Width = 107;
-            gridViewDecimalColumn2.DataType = typeof(int);
-            gridViewDecimalColumn2.EnableExpressionEditor = false;
-            gridViewDecimalColumn2.FieldName = "ID_sluzbe";
-            gridViewDecimalColumn2.HeaderText = "ID_sluzbe";
-            gridViewDecimalColumn2.IsAutoGenerated = true;
-            gridViewDecimalColumn2.IsVisible = false;
-            gridViewDecimalColumn2.Name = "ID_sluzbe";
-            gridViewDecimalColumn2.VisibleInColumnChooser = false;
-            gridViewDecimalColumn2.Width = 113;
-            gridViewDecimalColumn3.DataType = typeof(System.Nullable<int>);
-            gridViewDecimalColumn3.EnableExpressionEditor = false;
-            gridViewDecimalColumn3.FieldName = "redni_broj";
-            gridViewDecimalColumn3.HeaderText = "Redni broj";
-            gridViewDecimalColumn3.IsAutoGenerated = true;
-            gridViewDecimalColumn3.Name = "redni_broj";
-            gridViewDecimalColumn3.Width = 61;
-            gridViewDecimalColumn3.WrapText = true;
+            gridViewDecimalColumn1.Name = "redni_broj";
+            gridViewDecimalColumn1.Width = 61;
+            gridViewDecimalColumn1.WrapText = true;
             gridViewDateTimeColumn1.CustomFormat = "dd/MM/yyyy";
             gridViewDateTimeColumn1.DataType = typeof(System.Nullable<System.DateTime>);
             gridViewDateTimeColumn1.EditorType = Telerik.WinControls.UI.GridViewDateTimeEditorType.DateTimePickerSpinMode;
@@ -228,6 +217,59 @@ namespace ProtokolApp
             gridViewTextBoxColumn7.Name = "napomena";
             gridViewTextBoxColumn7.Width = 232;
             gridViewTextBoxColumn7.WrapText = true;
+            gridViewTextBoxColumn8.EnableExpressionEditor = false;
+            gridViewTextBoxColumn8.FieldName = "arhiva";
+            gridViewTextBoxColumn8.HeaderText = "Arhiva";
+            gridViewTextBoxColumn8.IsAutoGenerated = true;
+            gridViewTextBoxColumn8.Name = "arhiva";
+            gridViewTextBoxColumn8.Width = 73;
+            gridViewTextBoxColumn9.DataType = typeof(ProtokolApp.sluzbe);
+            gridViewTextBoxColumn9.EnableExpressionEditor = false;
+            gridViewTextBoxColumn9.FieldName = "sluzbe";
+            gridViewTextBoxColumn9.HeaderText = "sluzbe";
+            gridViewTextBoxColumn9.IsAutoGenerated = true;
+            gridViewTextBoxColumn9.IsVisible = false;
+            gridViewTextBoxColumn9.Name = "sluzbe";
+            gridViewTextBoxColumn9.VisibleInColumnChooser = false;
+            gridViewTextBoxColumn9.Width = 138;
+            gridViewTextBoxColumn10.DataType = typeof(ProtokolApp.tip);
+            gridViewTextBoxColumn10.EnableExpressionEditor = false;
+            gridViewTextBoxColumn10.FieldName = "tip";
+            gridViewTextBoxColumn10.HeaderText = "tip";
+            gridViewTextBoxColumn10.IsAutoGenerated = true;
+            gridViewTextBoxColumn10.IsVisible = false;
+            gridViewTextBoxColumn10.Name = "tip";
+            gridViewTextBoxColumn10.Width = 175;
+            gridViewTextBoxColumn11.DataType = typeof(System.Nullable<int>);
+            gridViewTextBoxColumn11.EnableExpressionEditor = false;
+            gridViewTextBoxColumn11.FieldName = "CntDokumenata";
+            gridViewTextBoxColumn11.HeaderText = "BrojDokumenata";
+            gridViewTextBoxColumn11.Name = "brojDokumenata";
+            gridViewDateTimeColumn3.DataType = typeof(System.Nullable<System.DateTime>);
+            gridViewDateTimeColumn3.EnableExpressionEditor = false;
+            gridViewDateTimeColumn3.FieldName = "DatumVrijeme";
+            gridViewDateTimeColumn3.HeaderText = "Datum i vrijeme unosa";
+            gridViewDateTimeColumn3.IsVisible = false;
+            gridViewDateTimeColumn3.Name = "Datum i vrijeme unosa";
+            gridViewDateTimeColumn3.VisibleInColumnChooser = false;
+            gridViewDecimalColumn2.DataType = typeof(int);
+            gridViewDecimalColumn2.EnableExpressionEditor = false;
+            gridViewDecimalColumn2.FieldName = "ID_sluzbe";
+            gridViewDecimalColumn2.HeaderText = "ID_sluzbe";
+            gridViewDecimalColumn2.IsAutoGenerated = true;
+            gridViewDecimalColumn2.IsVisible = false;
+            gridViewDecimalColumn2.Name = "ID_sluzbe";
+            gridViewDecimalColumn2.VisibleInColumnChooser = false;
+            gridViewDecimalColumn2.Width = 113;
+            gridViewDecimalColumn3.DataType = typeof(int);
+            gridViewDecimalColumn3.EnableExpressionEditor = false;
+            gridViewDecimalColumn3.FieldName = "ID";
+            gridViewDecimalColumn3.HeaderText = "ID";
+            gridViewDecimalColumn3.IsAutoGenerated = true;
+            gridViewDecimalColumn3.IsVisible = false;
+            gridViewDecimalColumn3.Name = "ID";
+            gridViewDecimalColumn3.VisibleInColumnChooser = false;
+            gridViewDecimalColumn3.Width = 107;
             gridViewDecimalColumn4.DataType = typeof(int);
             gridViewDecimalColumn4.EnableExpressionEditor = false;
             gridViewDecimalColumn4.FieldName = "izbrisan";
@@ -237,12 +279,6 @@ namespace ProtokolApp
             gridViewDecimalColumn4.Name = "izbrisan";
             gridViewDecimalColumn4.VisibleInColumnChooser = false;
             gridViewDecimalColumn4.Width = 120;
-            gridViewTextBoxColumn8.EnableExpressionEditor = false;
-            gridViewTextBoxColumn8.FieldName = "arhiva";
-            gridViewTextBoxColumn8.HeaderText = "Arhiva";
-            gridViewTextBoxColumn8.IsAutoGenerated = true;
-            gridViewTextBoxColumn8.Name = "arhiva";
-            gridViewTextBoxColumn8.Width = 73;
             gridViewDecimalColumn5.DataType = typeof(int);
             gridViewDecimalColumn5.EnableExpressionEditor = false;
             gridViewDecimalColumn5.FieldName = "ID_tipa";
@@ -252,45 +288,16 @@ namespace ProtokolApp
             gridViewDecimalColumn5.Name = "ID_tipa";
             gridViewDecimalColumn5.VisibleInColumnChooser = false;
             gridViewDecimalColumn5.Width = 170;
-            gridViewTextBoxColumn9.DataType = typeof(System.Collections.Generic.ICollection<ProtokolApp.dokument>);
-            gridViewTextBoxColumn9.EnableExpressionEditor = false;
-            gridViewTextBoxColumn9.FieldName = "dokument";
-            gridViewTextBoxColumn9.HeaderText = "dokument";
-            gridViewTextBoxColumn9.IsAutoGenerated = true;
-            gridViewTextBoxColumn9.IsVisible = false;
-            gridViewTextBoxColumn9.Name = "dokument";
-            gridViewTextBoxColumn9.Width = 137;
-            gridViewTextBoxColumn10.DataType = typeof(ProtokolApp.sluzbe);
-            gridViewTextBoxColumn10.EnableExpressionEditor = false;
-            gridViewTextBoxColumn10.FieldName = "sluzbe";
-            gridViewTextBoxColumn10.HeaderText = "sluzbe";
-            gridViewTextBoxColumn10.IsAutoGenerated = true;
-            gridViewTextBoxColumn10.IsVisible = false;
-            gridViewTextBoxColumn10.Name = "sluzbe";
-            gridViewTextBoxColumn10.VisibleInColumnChooser = false;
-            gridViewTextBoxColumn10.Width = 138;
-            gridViewTextBoxColumn11.DataType = typeof(ProtokolApp.tip);
-            gridViewTextBoxColumn11.EnableExpressionEditor = false;
-            gridViewTextBoxColumn11.FieldName = "tip";
-            gridViewTextBoxColumn11.HeaderText = "tip";
-            gridViewTextBoxColumn11.IsAutoGenerated = true;
-            gridViewTextBoxColumn11.IsVisible = false;
-            gridViewTextBoxColumn11.Name = "tip";
-            gridViewTextBoxColumn11.VisibleInColumnChooser = false;
-            gridViewTextBoxColumn11.Width = 175;
-            gridViewTextBoxColumn12.DataType = typeof(System.Nullable<int>);
+            gridViewTextBoxColumn12.DataType = typeof(System.Collections.Generic.ICollection<ProtokolApp.dokument>);
             gridViewTextBoxColumn12.EnableExpressionEditor = false;
-            gridViewTextBoxColumn12.FieldName = "CntDokumenata";
-            gridViewTextBoxColumn12.HeaderText = "BrojDokumenata";
-            gridViewTextBoxColumn12.Name = "brojDokumenata";
-            gridViewDateTimeColumn3.DataType = typeof(System.Nullable<System.DateTime>);
-            gridViewDateTimeColumn3.FieldName = "DatumVrijeme";
-            gridViewDateTimeColumn3.HeaderText = "Datum i vrijeme unosa";
-            gridViewDateTimeColumn3.Name = "Datum i vrijeme unosa";
+            gridViewTextBoxColumn12.FieldName = "dokument";
+            gridViewTextBoxColumn12.HeaderText = "dokument";
+            gridViewTextBoxColumn12.IsAutoGenerated = true;
+            gridViewTextBoxColumn12.IsVisible = false;
+            gridViewTextBoxColumn12.Name = "dokument";
+            gridViewTextBoxColumn12.Width = 137;
             this.radGridView1.MasterTemplate.Columns.AddRange(new Telerik.WinControls.UI.GridViewDataColumn[] {
             gridViewDecimalColumn1,
-            gridViewDecimalColumn2,
-            gridViewDecimalColumn3,
             gridViewDateTimeColumn1,
             gridViewDateTimeColumn2,
             gridViewTextBoxColumn1,
@@ -300,15 +307,18 @@ namespace ProtokolApp
             gridViewTextBoxColumn5,
             gridViewTextBoxColumn6,
             gridViewTextBoxColumn7,
-            gridViewDecimalColumn4,
             gridViewTextBoxColumn8,
-            gridViewDecimalColumn5,
             gridViewTextBoxColumn9,
             gridViewTextBoxColumn10,
             gridViewTextBoxColumn11,
-            gridViewTextBoxColumn12,
-            gridViewDateTimeColumn3});
+            gridViewDateTimeColumn3,
+            gridViewDecimalColumn2,
+            gridViewDecimalColumn3,
+            gridViewDecimalColumn4,
+            gridViewDecimalColumn5,
+            gridViewTextBoxColumn12});
             this.radGridView1.MasterTemplate.DataSource = this.protokolBindingSource;
+            this.radGridView1.MasterTemplate.EnableAlternatingRowColor = true;
             this.radGridView1.MasterTemplate.EnableFiltering = true;
             this.radGridView1.MasterTemplate.HorizontalScrollState = Telerik.WinControls.UI.ScrollState.AlwaysShow;
             this.radGridView1.MasterTemplate.PageSize = 200;
@@ -319,12 +329,14 @@ namespace ProtokolApp
             // 
             // 
             this.radGridView1.RootElement.ControlBounds = new System.Drawing.Rectangle(2, 18, 240, 150);
-            this.radGridView1.Size = new System.Drawing.Size(1179, 452);
+            this.radGridView1.Size = new System.Drawing.Size(1636, 452);
             this.radGridView1.TabIndex = 0;
             this.radGridView1.ThemeName = "Office2010Silver";
             this.radGridView1.RowFormatting += new Telerik.WinControls.UI.RowFormattingEventHandler(this.radGridView1_RowFormatting);
             this.radGridView1.CellEditorInitialized += new Telerik.WinControls.UI.GridViewCellEventHandler(this.radGridView1_CellEditorInitialized);
             this.radGridView1.CurrentRowChanged += new Telerik.WinControls.UI.CurrentRowChangedEventHandler(this.radGridView1_CurrentRowChanged);
+            this.radGridView1.UserAddingRow += new Telerik.WinControls.UI.GridViewRowCancelEventHandler(this.MasterTemplate_UserAddingRow);
+            this.radGridView1.UserAddedRow += new Telerik.WinControls.UI.GridViewRowEventHandler(this.MasterTemplate_UserAddedRow);
             this.radGridView1.CellValueChanged += new Telerik.WinControls.UI.GridViewCellEventHandler(this.radGridView1_CellValueChanged);
             this.radGridView1.DataBindingComplete += new Telerik.WinControls.UI.GridViewBindingCompleteEventHandler(this.radGridView1_DataBindingComplete_1);
             this.radGridView1.FilterChanged += new Telerik.WinControls.UI.GridViewCollectionChangedEventHandler(this.radGridView1_FilterChanged);
@@ -338,6 +350,9 @@ namespace ProtokolApp
             // 
             this.radGroupBox1.AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
             this.radGroupBox1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.radGroupBox1.Controls.Add(this.radButton6);
+            this.radGroupBox1.Controls.Add(this.radButton5);
+            this.radGroupBox1.Controls.Add(this.radDropDownBrojDana);
             this.radGroupBox1.Controls.Add(this.button1);
             this.radGroupBox1.Controls.Add(this.radWaitingBar2);
             this.radGroupBox1.Controls.Add(this.lblExportExcel);
@@ -354,15 +369,46 @@ namespace ProtokolApp
             // 
             // 
             this.radGroupBox1.RootElement.ControlBounds = new System.Drawing.Rectangle(0, 0, 200, 100);
-            this.radGroupBox1.Size = new System.Drawing.Size(1183, 83);
+            this.radGroupBox1.Size = new System.Drawing.Size(1640, 83);
             this.radGroupBox1.TabIndex = 1;
             this.radGroupBox1.Text = "Glavni meni";
             this.radGroupBox1.ThemeName = "Office2010Silver";
             this.radGroupBox1.Click += new System.EventHandler(this.radGroupBox1_Click);
             // 
+            // radButton6
+            // 
+            this.radButton6.Location = new System.Drawing.Point(680, 42);
+            this.radButton6.Name = "radButton6";
+            this.radButton6.Size = new System.Drawing.Size(110, 24);
+            this.radButton6.TabIndex = 12;
+            this.radButton6.Text = "Ucitaj layout";
+            this.radButton6.Visible = false;
+            this.radButton6.Click += new System.EventHandler(this.radButton6_Click);
+            // 
+            // radButton5
+            // 
+            this.radButton5.Location = new System.Drawing.Point(680, 13);
+            this.radButton5.Name = "radButton5";
+            this.radButton5.Size = new System.Drawing.Size(110, 24);
+            this.radButton5.TabIndex = 11;
+            this.radButton5.Text = "Sacuvaj layout";
+            this.radButton5.ThemeName = "Fluent";
+            this.radButton5.Click += new System.EventHandler(this.radButton5_Click_2);
+            // 
+            // radDropDownBrojDana
+            // 
+            this.radDropDownBrojDana.DropDownStyle = Telerik.WinControls.RadDropDownStyle.DropDownList;
+            this.radDropDownBrojDana.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.radDropDownBrojDana.Location = new System.Drawing.Point(1051, 46);
+            this.radDropDownBrojDana.Name = "radDropDownBrojDana";
+            this.radDropDownBrojDana.Size = new System.Drawing.Size(171, 20);
+            this.radDropDownBrojDana.TabIndex = 10;
+            this.radDropDownBrojDana.ThemeName = "Office2010Silver";
+            this.radDropDownBrojDana.SelectedIndexChanged += new Telerik.WinControls.UI.Data.PositionChangedEventHandler(this.radDropDownBrojDana_SelectedIndexChanged);
+            // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(976, 43);
+            this.button1.Location = new System.Drawing.Point(1538, 32);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 9;
@@ -374,7 +420,7 @@ namespace ProtokolApp
             // radWaitingBar2
             // 
             this.radWaitingBar2.AssociatedControl = this.radGridView1;
-            this.radWaitingBar2.Location = new System.Drawing.Point(818, 22);
+            this.radWaitingBar2.Location = new System.Drawing.Point(1379, 11);
             this.radWaitingBar2.Name = "radWaitingBar2";
             this.radWaitingBar2.Size = new System.Drawing.Size(64, 56);
             this.radWaitingBar2.TabIndex = 8;
@@ -418,7 +464,6 @@ namespace ProtokolApp
             // radDropDownList1
             // 
             this.radDropDownList1.DisplayMember = "Naziv";
-            this.radDropDownList1.DropDownAnimationEnabled = false;
             this.radDropDownList1.DropDownStyle = Telerik.WinControls.RadDropDownStyle.DropDownList;
             this.radDropDownList1.Location = new System.Drawing.Point(305, 46);
             this.radDropDownList1.Name = "radDropDownList1";
@@ -480,8 +525,8 @@ namespace ProtokolApp
             // 
             // 
             // 
-            this.radGroupBox2.RootElement.ControlBounds = new System.Drawing.Rectangle(0, 83, 1183, 472);
-            this.radGroupBox2.Size = new System.Drawing.Size(1183, 472);
+            this.radGroupBox2.RootElement.ControlBounds = new System.Drawing.Rectangle(0, 83, 1640, 472);
+            this.radGroupBox2.Size = new System.Drawing.Size(1640, 472);
             this.radGroupBox2.TabIndex = 2;
             this.radGroupBox2.Text = "Protokol";
             this.radGroupBox2.ThemeName = "Office2010Silver";
@@ -500,7 +545,7 @@ namespace ProtokolApp
             // 
             // 
             this.radGroupBox3.RootElement.ControlBounds = new System.Drawing.Rectangle(0, 555, 200, 100);
-            this.radGroupBox3.Size = new System.Drawing.Size(1183, 154);
+            this.radGroupBox3.Size = new System.Drawing.Size(1640, 154);
             this.radGroupBox3.TabIndex = 3;
             this.radGroupBox3.Text = "Dokumenti";
             this.radGroupBox3.ThemeName = "Office2010Silver";
@@ -569,11 +614,11 @@ namespace ProtokolApp
             gridViewTextBoxColumn13.HeaderText = "Naziv filea";
             gridViewTextBoxColumn13.IsAutoGenerated = true;
             gridViewTextBoxColumn13.Name = "Filename";
-            gridViewTextBoxColumn13.Width = 772;
+            gridViewTextBoxColumn13.Width = 1076;
             gridViewTextBoxColumn14.FieldName = "Opis";
             gridViewTextBoxColumn14.HeaderText = "Opis";
             gridViewTextBoxColumn14.Name = "Opis";
-            gridViewTextBoxColumn14.Width = 387;
+            gridViewTextBoxColumn14.Width = 540;
             gridViewTextBoxColumn14.WrapText = true;
             gridViewTextBoxColumn15.DataType = typeof(ProtokolApp.protokol);
             gridViewTextBoxColumn15.FieldName = "protokol";
@@ -608,7 +653,7 @@ namespace ProtokolApp
             // 
             // 
             this.radGridView2.RootElement.ControlBounds = new System.Drawing.Rectangle(2, 18, 240, 150);
-            this.radGridView2.Size = new System.Drawing.Size(1179, 134);
+            this.radGridView2.Size = new System.Drawing.Size(1636, 134);
             this.radGridView2.TabIndex = 0;
             this.radGridView2.ThemeName = "Office2010Silver";
             this.radGridView2.DataBindingComplete += new Telerik.WinControls.UI.GridViewBindingCompleteEventHandler(this.radGridView2_DataBindingComplete);
@@ -621,16 +666,27 @@ namespace ProtokolApp
             // 
             this.radTabbedFormControl1.Location = new System.Drawing.Point(0, 0);
             this.radTabbedFormControl1.Name = "radTabbedFormControl1";
-            this.radTabbedFormControl1.Size = new System.Drawing.Size(1183, 709);
+            this.radTabbedFormControl1.Size = new System.Drawing.Size(1640, 709);
             this.radTabbedFormControl1.TabIndex = 4;
             this.radTabbedFormControl1.Text = "Protokol";
             this.radTabbedFormControl1.ThemeName = "Office2010Silver";
+            // 
+            // radContextMenu1
+            // 
+            this.radContextMenu1.Items.AddRange(new Telerik.WinControls.RadItem[] {
+            this.radMenuItem1});
+            this.radContextMenu1.ThemeName = "Office2010Silver";
+            // 
+            // radMenuItem1
+            // 
+            this.radMenuItem1.Name = "radMenuItem1";
+            this.radMenuItem1.Text = "Pregledaj istoriju";
             // 
             // RadFormOsnovniProtokol
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1183, 709);
+            this.ClientSize = new System.Drawing.Size(1640, 709);
             this.Controls.Add(this.radGroupBox2);
             this.Controls.Add(this.radGroupBox1);
             this.Controls.Add(this.radGroupBox3);
@@ -645,15 +701,22 @@ namespace ProtokolApp
             this.Text = "Protokol";
             this.ThemeName = "Office2010Silver";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Activated += new System.EventHandler(this.RadFormOsnovniProtokol_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.RadForm1_FormClosing);
             this.Load += new System.EventHandler(this.FrmOsnovni_Load);
+            this.Shown += new System.EventHandler(this.RadFormOsnovniProtokol_Shown);
             this.EnabledChanged += new System.EventHandler(this.frmOsnovna_EnabledChanged);
+            this.Enter += new System.EventHandler(this.RadFormOsnovniProtokol_Shown);
+            this.Resize += new System.EventHandler(this.RadFormOsnovniProtokol_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.radGridView1.MasterTemplate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.radGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.protokolBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.radGroupBox1)).EndInit();
             this.radGroupBox1.ResumeLayout(false);
             this.radGroupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.radButton6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radButton5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.radDropDownBrojDana)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.radWaitingBar2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.lblExportExcel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.radButton1)).EndInit();
@@ -701,5 +764,10 @@ namespace ProtokolApp
         private RadWaitingBar radWaitingBar2;
         private LineRingWaitingBarIndicatorElement lineRingWaitingBarIndicatorElement2;
         private System.Windows.Forms.Button button1;
+        private RadContextMenu radContextMenu1;
+        private RadMenuItem radMenuItem1;
+        private RadDropDownList radDropDownBrojDana;
+        private RadButton radButton5;
+        private RadButton radButton6;
     }
 }

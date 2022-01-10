@@ -13,7 +13,7 @@ namespace ProtokolApp
 {
     using System;
     using System.Collections.Generic;
-    
+
     public partial class protokol : INotifyPropertyChanged
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -25,6 +25,7 @@ namespace ProtokolApp
         private void NotifyPropertyChanged(string info)
         {
             if (PropertyChanged != null)
+               
                 PropertyChanged(this, new PropertyChangedEventArgs(info));
         }
 
@@ -206,7 +207,7 @@ namespace ProtokolApp
         [ReadOnly(true)]
         public string Racunar { get; set; }
 
-        
+
         private Nullable<int> _CntDokumenata;
         [ReadOnly(true)]
         public Nullable<int> CntDokumenata
@@ -220,9 +221,9 @@ namespace ProtokolApp
             }
         }
         [ReadOnly(true)]
-        
+
         public Nullable<System.DateTime> DatumVrijeme { get; set; }
-    
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
 
